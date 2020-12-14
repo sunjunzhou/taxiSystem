@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "http://mybatis.org/dtd/mybatis-3-mapper.dtd" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.snowsoft.dao.PunishCheckDao">
+
+<select id="getPunishList" parameterType="map" resultType="map">
+SELECT te.id, t_c.`carId`, td.`name` driver, tr.score, tr.`name` why,  tc.`shortName`, te.`successTime`, te.isType, te.`address`,tu.`u_name` who_check
+FROM t_punish te, t_car t_c, t_driver td, t_company tc, t_rule tr, t_user tu
+WHERE te.`carId` = t_c.id
+AND t_c.`carId` = td.`carId`
+AND t_c.`company_id` = tc.`id`
+AND tr.`id` = te.`why`
+AND te.`isSend` = 1
+AND tu.`u_id` = te.`who_check`
+</select>
+
+<select id = "getCount" resultType = "int">
+SELECT COUNT(*) FROM (SELECT te.id, t_c.`carId`, td.`name` driver, tr.score, tr.`name` why,  tc.`shortName`, te.`successTime`, te.isType, te.`address`,tu.`u_name` who_check
+FROM t_punish te, t_car t_c, t_driver td, t_company tc, t_rule tr, t_user tu
+WHERE te.`carId` = t_c.id
+AND t_c.`carId` = td.`carId`
+AND t_c.`company_id` = tc.`id`
+AND tr.`id` = te.`why`
+AND te.`isSend` = 1
+AND tu.`u_id` = te.`who_check`)AS temp;
+</select>
+
+<update id="sendPunish" parameterType="map">
+update t_punish set isType = 1, who_check = #{who_check}, successTime = #{successTime} where id = #{id}
+</update>
+
+<select id="selectDriver" parameterType="map" resultType="map">
+SELECT td.id driver, td.`score`
+FROM t_car tc, t_driver td
+WHERE tc.`carId` = #{carId}
+AND tc.`driverId` = td.`id`
+</select>
+
+<update id="updateDriverAndScore" parameterType="map">
+update t_driver set score = #{score} where id = #{driver}
+</update>
+</mapper>

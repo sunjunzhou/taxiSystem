@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "http://mybatis.org/dtd/mybatis-3-mapper.dtd" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.snowsoft.dao.DriverCheckDao">
+
+<select id="getDriverList" resultType="map">
+SELECT tco.id, tco.`name`, tco.sex, tco.`tel`, tco.`card_Id`, tc.`fullName` companyName, tco.`isType`, tco.address , tco.Native, tco.carId FROM t_driver tco, t_company tc
+WHERE tco.`company_id` = tc.`id` AND tco.`isSend` = 1
+</select>
+
+<select id = "getCount" resultType = "int">
+SELECT COUNT(*) FROM (SELECT tco.id, tco.`name`, tco.sex, tco.`tel`, tco.`card_Id`, tc.`fullName` companyName, tco.`isType`, tco.address , tco.Native, tco.carId FROM t_driver tco, t_company tc
+WHERE tco.`company_id` = tc.`id` AND tco.`isSend` = 1)AS temp;
+</select>
+
+<update id="sendDriver">
+update t_driver set isType = 1 where id = #{id}
+</update>
+
+</mapper>

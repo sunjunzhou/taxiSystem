@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "http://mybatis.org/dtd/mybatis-3-mapper.dtd" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.snowsoft.dao.CarOwnerDao">
+
+<select id="getCarOwnerList" parameterType="map" resultType="map">
+SELECT 
+  tco.`id`,
+  tco.`name`,
+  tco.`sex`,
+  tco.`cardId`,
+ tco.`tel`,
+  tco.`isType`,
+  tco.`address`,
+  tco.`operator`,
+  tco.`operator_time`,
+  tco.`company_id` ,
+  tc.shortName,
+  tco.`checkPeople`,
+  tco.`checkPeople_name`,
+  tco.`check_time`,
+  tu.`u_name` operator_name,
+  tco.`check_suggestion`,
+  tco.`isSend`
+FROM
+t_carowner tco, t_company tc,t_user tu
+  WHERE tc.id = tco.company_id
+  AND tu.`u_id` = tco.`operator`
+  and tco.company_id = #{companyId}
+</select>
+
+<select id = "getCount" resultType = "int">
+SELECT COUNT(*) FROM (SELECT 
+  tco.`id`,
+  tco.`name`,
+  tco.`sex`,
+  tco.`cardId`,
+ tco.`tel`,
+  tco.`isType`,
+  tco.`address`,
+  tco.`operator`,
+  tco.`operator_time`,
+  tco.`company_id` ,
+  tc.shortName,
+  tco.`checkPeople`,
+  tco.`checkPeople_name`,
+  tco.`check_time`,
+  tu.`u_name` operator_name,
+  tco.`check_suggestion`,
+  tco.`isSend`
+FROM
+t_carowner tco, t_company tc,t_user tu
+  WHERE tc.id = tco.company_id
+  AND tu.`u_id` = tco.`operator`
+  and tco.company_id = #{companyId})AS temp;
+</select>
+
+<insert id="saveCarOwner" parameterType="CarOwner">
+insert into t_carowner (
+  `name`,
+  `sex`,
+  `cardId`,
+  `tel`,
+  `address`,
+  `operator`,
+  `operator_time`,
+  `company_id`,
+  `isType`,
+  `isSend`,
+  `check_suggestion`
+) values(#{name},#{sex},#{carId},#{tel},#{address},#{operator},#{operator_time},#{company_id},#{isType},#{isSend},'审核未通过');
+</insert>
+
+<delete id="deleteCarOwnerById">
+delete from t_carowner where id =#{id};
+</delete>
+
+<update id="sendCarOwner">
+update t_carowner set `isSend` = 1 where id = #{id}
+</update>
+
+<update id="editCarOwner" parameterType="CarOwner">
+update t_carowner set 
+`name` = #{name},
+  `sex` = #{sex},
+  `cardId` = #{cardId},
+  `tel` = #{tel},
+  `address` = #{address},
+  `operator_time` = #{operator_time} where id = #{id}
+</update>
+
+<select id="getcarownerById" resultType="map">
+select * from t_carowner where id = #{id}</select>
+</mapper>

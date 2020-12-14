@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "http://mybatis.org/dtd/mybatis-3-mapper.dtd" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.snowsoft.dao.UserDao">
+<select id="getAllInfo" resultType="map">
+SELECT
+tu.u_id id,
+tu.u_name account,
+tu.u_birth birthday,
+tu.u_sex sex,
+tu.u_tel mobile,
+tu.u_address address,
+tu.u_type TYPE,
+td.`name` deptname,
+tu.u_operate_time opertime,
+tc.shortName companyname
+FROM  t_user tu,t_dept td,t_company tc
+WHERE tu.u_deptId = td.id 
+AND tc.id = tu.u_companyId
+and tu.u_id != 1 and tu.u_id != 2
+</select>
+
+<select id="getAllMenuInfo" resultType="map">
+select id, m_name from t_menu;
+</select>
+
+<select id="getAllCount" resultType="int">
+select count(*) from (
+SELECT
+tu.u_id id,
+tu.u_name account,
+tu.u_birth birthday,
+tu.u_sex sex,
+tu.u_tel mobile,
+tu.u_address address,
+tu.u_type TYPE,
+td.`name` deptname,
+tu.u_operate_time opertime,
+tc.shortName companyname
+FROM  t_user tu,t_dept td,t_company tc
+WHERE tu.u_deptId = td.id 
+AND tc.id = tu.u_companyId
+and tu.u_id != 1
+) as temp;
+</select>
+
+<select id="getAllDeptInfo" resultType="map">
+select id,name from t_dept where id != 1;
+</select>
+
+<select id="getAllCompanyInfo" resultType="map">
+select id,fullName from t_company where id != 1;
+</select>
+
+<update id="editUser" parameterType="User">
+update t_user set u_name = #{uName}, u_sex = #{uSex}, u_birth = #{uBirth}, u_tel = #{mobile}, u_deptId = #{uDeptId},
+u_address = #{uAddress},u_operate_time = #{uOperateTime},u_companyId = #{companyId} ,u_operate=#{uOperate},u_operate_name=#{uOperate_name}where u_id = #{uId}
+
+</update>
+
+<insert id="saveUser" parameterType="User" useGeneratedKeys="true" keyColumn="u_id" keyProperty="uId">
+insert into t_user(
+  `u_name`,
+  `u_password`,
+  `u_sex`,
+  `u_birth`,
+  `u_tel`,
+  `u_address`,
+  `u_deptId`,
+  `u_type`,
+  `u_operate`,
+  `u_operate_time`,
+  `u_companyId`,
+  `u_operate_name`) 
+values(#{uName},#{uPassword},#{uSex},#{uBirth},#{mobile},#{uAddress},#{uDeptId},#{uType},#{uOperate},#{uOperateTime},#{companyId},#{uOperate_name});
+</insert>
+
+<insert id="saveMenu" parameterType="map">
+INSERT INTO t_user_menu (`user_id`, `menu_id`) 
+VALUES (#{user_id},#{menu_id});
+</insert>
+
+<delete id="deleteUserById">
+	delete  from t_user where u_id = #{uId};
+</delete>
+
+<select id="getUserById" resultType="map">
+SELECT u_id,u_name,u_sex,u_birth,u_tel,u_address,u_deptId,u_companyId,u_type,NAME deptname FROM t_user,t_dept td,t_company WHERE u_id=#{uId} AND u_deptId = td.id AND t_company.`id` = t_user.`u_companyId`; 
+</select>
+
+<select id="getOwnMenuInfo" resultType="map">
+select id,menu_id from t_user_menu where user_id = #{uId}</select>
+
+<delete id="deleteOwnMenu" parameterType="User">
+delete from t_user_menu where user_id = #{uId}</delete>
+</mapper>

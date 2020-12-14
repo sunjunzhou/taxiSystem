@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "http://mybatis.org/dtd/mybatis-3-mapper.dtd" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.snowsoft.dao.DeptDao">
+<select id = "getDeptList" parameterType = "map" resultType = "map">
+	select 
+	td.id,
+	td.`name`,
+	td.`describe`,
+	createtime,
+	operator_time
+	from t_dept td
+	where id != 1
+	limit #{page},#{limit}
+</select>
+<select id = "getCount" resultType = "int">
+select count(*) from t_dept where id != 1
+</select>
+
+<select id="getdeptById" resultType = "map">
+	select id,name,`describe` from t_dept where id =#{id}
+</select>
+
+<!-- 添加 -->
+
+<insert id="insertDeptInfo" parameterType="Dept">
+INSERT INTO `t_dept` (`name`, `describe`, `leader`, `createtime`, `operator`, `operator_name`, `operator_time`) values ( 
+#{name},#{describe},#{leader},#{createtime},#{operator},#{operator_name},#{operator_time})
+</insert>
+
+
+<!-- 修改角色信息 -->
+<update id="updateDeptInfo" parameterType="Dept">
+	update t_dept set `name`=#{name},`operator_time`=#{operator_time},`describe`=#{describe},`operator`=#{operator}, `operator_name`=#{operator_name} where id=#{id}
+</update>
+
+<delete id="deleteDeptById">
+	delete  from t_dept where id=#{id};
+</delete>
+
+</mapper>

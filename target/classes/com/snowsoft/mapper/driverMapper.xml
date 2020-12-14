@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "http://mybatis.org/dtd/mybatis-3-mapper.dtd" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.snowsoft.dao.DriverDao">
+
+<select id="getDriverList" parameterType="map" resultType="map">
+select * from t_driver,t_user where id != 1 and t_user.u_companyId = t_driver.company_id and t_user.u_companyId = #{companyId};
+</select>
+
+<select id = "getCount" resultType = "int">
+select count(*) from (select * from t_driver,t_user where id != 1 and t_user.u_companyId = t_driver.company_id and t_user.u_companyId = #{companyId}) as temp;
+</select>
+
+<select id="getAllCarInfo" parameterType="int"  resultType="map">
+select carId from t_car where isType = 1 and company_id = #{id}
+</select>
+
+<insert id="saveDriver" parameterType="Driver" useGeneratedKeys="true" keyColumn="id" keyProperty="id">
+insert into t_driver (
+  `name`,
+  `sex`,
+  `tel`,
+  `card_Id`,
+  `address`,
+  `Native`,
+  `carId`,
+  `score`,
+  `isType`,
+  `isSend`,
+  `company_id`
+)values(#{name},#{sex},#{tel},#{card_Id},#{address},#{Native},#{carId},#{score},#{isType},#{isSend},#{company_id});
+</insert>
+
+<update id="saveDriverAndCar" parameterType="Driver">
+update t_car set `driverId` = #{id} where `carId` = #{carId}
+</update>
+
+<update id="updateDriverAndCar" parameterType="Driver">
+update t_car set `driverId` = 1 where `driverId` = #{id}
+</update>
+
+<delete id="deleteDriverById">
+delete from t_driver where `id` = #{id};
+</delete>
+
+<update id="sendDriver">
+update t_driver set isSend = 1 where id = #{id}
+</update>
+
+<select id="getDriverInfoById" resultType="map">
+select* from t_driver where id = #{id}
+</select>
+
+<update id="editDriver" parameterType="Driver">
+update t_driver set 
+  `name` = #{name},
+  `sex` = #{sex},
+  `tel` = #{tel},
+  `card_Id` = #{card_Id},
+  `address` = #{address},
+  `Native` = #{Native},
+  `carId` = #{carId}
+  where `id` = #{id}
+</update>
+
+</mapper>

@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "http://mybatis.org/dtd/mybatis-3-mapper.dtd" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.snowsoft.dao.CarDao">
+
+<select id="getCarList" parameterType="map" resultType="map">
+SELECT 
+  tc.`id`,
+  tc.`carId`,
+  tc.`name`,
+  tc.`color`,
+  tc.`count_passenger`,
+  tc.`oilType`,
+  tc.`ownerId`,
+  tu.`name` ownerName,
+  tc.`car_type`,
+  tc.`isType`,
+  tc.`Engine_num`,
+  tc.`date_production`,
+  tc.`vender`,
+  tc.`operator`,
+  tc.`oper_time`,
+  tc.`isSend`,
+  tc.`driverId`,
+  tc.`check_suggestion`,
+  tc.`check_People`,
+  tc.`check_People_name`,
+  tc.`sendTime`,
+  tc.`sendSuccessTime` ,
+  tu2.`name` driverName 
+FROM `t_car` tc,t_carowner tu,t_driver tu2,t_user
+WHERE tc.`ownerId` = tu.id AND tc.`driverId` = tu2.`id` AND
+t_user.u_companyId = tc.company_id
+and tc.company_id = #{companyId}
+</select>
+
+<delete id="deleteCarById">
+delete from t_car where id = #{id}
+</delete>
+
+<select id = "getCount" resultType = "int">
+select count(*) from (
+SELECT 
+  tc.`id`,
+  tc.`carId`,
+  tc.`name`,
+  tc.`color`,
+  tc.`count_passenger`,
+  tc.`oilType`,
+  tc.`ownerId`,
+  tu.`name` ownerName,
+  tc.`car_type`,
+  tc.`isType`,
+  tc.`Engine_num`,
+  tc.`date_production`,
+  tc.`vender`,
+  tc.`operator`,
+  tc.`oper_time`,
+  tc.`isSend`,
+  tc.`driverId`,
+  tc.`check_suggestion`,
+  tc.`check_People`,
+  tc.`check_People_name`,
+  tc.`sendTime`,
+  tc.`sendSuccessTime` ,
+  tu2.`name` driverName 
+FROM `t_car` tc,t_carowner tu,t_driver tu2,t_user
+WHERE tc.`ownerId` = tu.id AND tc.`driverId` = tu2.`id` AND
+t_user.u_companyId = tc.company_id
+and tc.company_id = #{companyId}
+) as temp;
+</select>
+
+<select id="getAllCarOwnerInfo" resultType="map">
+select id ownerId,name ownerName from t_carowner where company_id = #{id} and isType = 1
+</select>
+
+<insert id="saveCar" parameterType="Car" useGeneratedKeys="true" keyColumn="id" keyProperty="id">
+insert into t_car(
+  `carId`,
+  `name`,
+  `color`,
+  `count_passenger`,
+  `oilType`,
+  `ownerId`,
+  `car_type`,
+  `isType`,
+  `Engine_num`,
+  `date_production`,
+  `vender`,
+  `operator`,
+  `oper_time`,
+  `isSend`,
+  `driverId`,
+  `company_id`,
+  `check_suggestion`
+) values(
+#{carId},#{name},#{color},#{count_passenger},#{oilType},#{ownerId},#{car_type},#{isType},#{Engine_num},#{date_production},#{vender},#{operator},#{oper_time},#{isSend},#{driverId},#{company_id}
+,'审核未通过');
+</insert>
+
+<insert id="saveCarAndOwner" parameterType="Car">
+insert into t_car_user(car,user_id) values(#{id},#{ownerId});
+</insert>
+
+<select id="getCarInfoById" resultType="map">
+select id,name,carId,color,oilType,ownerId,count_passenger,Engine_num,car_type,vender,date_production from t_car where id = #{id}
+</select>
+
+<update id="editCar" parameterType="Car">
+update t_car set `name`=#{name}, `carId`=#{carId}, `color`=#{color}, `oilType`=#{oilType}, `ownerId`=#{ownerId}, `car_type`=#{car_type},
+`vender`=#{vender}, `date_production`=#{date_production} where id = #{id}
+</update>
+
+<update id="sendCar" parameterType="map">
+update t_car set isSend = 1, sendTime = #{sendTime} where id = #{id};
+</update>
+</mapper>

@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "http://mybatis.org/dtd/mybatis-3-mapper.dtd" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.snowsoft.dao.RuleDao">
+<select id = "getRuleList" parameterType = "map" resultType = "map">
+SELECT 
+  tr.`id`,
+  tr.`name`,
+  tr.`scription`,
+  tr.`score`,
+  tr.`type`,
+  tr.`createTime`,
+  tu.`u_name` operator
+FROM
+  `taxi`.`t_rule` tr, t_user tu
+  WHERE tr.`operator` = tu.`u_id`
+
+
+</select>
+<select id = "getCount" resultType = "int">
+select count(*) from (SELECT 
+  tr.`id`,
+  tr.`name`,
+  tr.`scription`,
+  tr.`score`,
+  tr.`type`,
+  tr.`createTime`,
+  tu.`u_name`
+FROM
+  `taxi`.`t_rule` tr, t_user tu
+  WHERE tr.`operator` = tu.`u_id`
+)as temp
+</select>
+
+<insert id="saveRule" parameterType="Rule">
+insert into t_rule(`name`,`scription`,`operator`,createTime,`type`,score) values(#{name},#{scription},#{operator},#{createTime},#{type},#{score})
+</insert>
+
+<select id="getRuleById" resultType="map">
+select * from t_rule where id=#{id}</select>
+
+<update id="eidtRule" parameterType="Rule">
+update t_rule set `name`=#{name}, `scription` = #{scription}, type = #{type}, score=#{score} where id=#{id}
+</update>
+
+<delete id="deleteRule">
+delete from t_rule where id=#{id}
+</delete>
+</mapper>

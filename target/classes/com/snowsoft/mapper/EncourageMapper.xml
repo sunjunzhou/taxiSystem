@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "http://mybatis.org/dtd/mybatis-3-mapper.dtd" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.snowsoft.dao.EncourageDao">
+  <select id="getAllEncourageList" parameterType="map" resultType="map">
+ SELECT 
+  te.`id`,
+  t_c.`carId`,
+  td.`name` driver,
+  tr.`name` why,
+  tu.`u_name` who_check,
+  tu1.`u_name` who_send,
+  tc.`shortName`,
+  te.`sendTime`,
+  te.`successTime`,
+  te.`isType`,
+  te.isSend,
+  tr.scription
+FROM
+  `taxi`.`t_encourage` te, t_user tu, t_company tc, t_driver td, t_rule tr, t_user tu1,t_car t_c
+WHERE te.`carId` = t_c.`id`
+AND t_c.`driverId` = td.`id`
+AND tr.`id` = te.`why`
+AND tu.`u_id` = te.`who_check`
+AND tu1.`u_id` = te.`who_send`
+AND t_c.`id` = te.`carId`
+AND t_c.`company_id` = tc.`id`
+  </select>
+  
+  <select id="getCount" resultType="int">
+  SELECT COUNT(*) FROM (
+ SELECT 
+  te.`id`,
+  t_c.`carId`,
+  td.`name` driver,
+  tr.`name` why,
+  tu.`u_name` who_check,
+  tu1.`u_name` who_send,
+  tc.`shortName`,
+  te.`sendTime`,
+  te.`successTime`,
+  te.`isType`,
+  tr.scription
+FROM
+  `taxi`.`t_encourage` te, t_user tu, t_company tc, t_driver td, t_rule tr, t_user tu1,t_car t_c
+WHERE te.`carId` = t_c.`id`
+AND t_c.`driverId` = td.`id`
+AND tr.`id` = te.`why`
+AND tu.`u_id` = te.`who_check`
+AND tu1.`u_id` = te.`who_send`
+AND t_c.`id` = te.`carId`
+AND t_c.`company_id` = tc.`id`
+  ) AS temp
+  </select>
+  
+  <select id="getAllCarInfo" resultType="map">
+  select id, carId from t_car where isType = 1 and driverId != 1
+  </select>
+  
+  <select id="getAllEncourageInfo" resultType="map">
+  select id,name from t_rule where type = 1
+  </select>
+  
+  <insert id="saveEncourage" parameterType="Encourage">
+  insert into t_encourage(carId,why,isType,isSend,who_send,who_check,sendTime) values(#{carId},#{why},0,0,#{who_send},1,#{sendTime})
+  </insert>
+  
+  <select id="getEncourageInfoById" resultType="map">
+  select id,carId,why from t_encourage where id = #{id}
+  </select>
+  
+  <update id="editEncourage" parameterType="Encourage">
+  update t_encourage set carId=#{carId}, why=#{why} where id = #{id}
+  </update>
+  
+  <update id="sendEncourage" parameterType="map">
+  update t_encourage set isSend=1 where id=#{id}
+  </update>
+  
+  <delete id="deleteEncourageById">
+  delete from t_encourage where id = #{id}
+  </delete>
+</mapper>

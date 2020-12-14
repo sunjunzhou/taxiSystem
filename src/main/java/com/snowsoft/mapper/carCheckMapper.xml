@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "http://mybatis.org/dtd/mybatis-3-mapper.dtd" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.snowsoft.dao.CarCheckDao">
+
+<select id="getCarList" parameterType="map" resultType="map">
+SELECT tco.id, tco.`name`, tco.car_type, tco.`carId`, tco.`count_passenger`, tc.`fullName` companyName, tco.`isType`, tco.oilType , tco.sendTime FROM t_car tco, t_company tc
+WHERE tco.`company_id` = tc.`id` AND tco.`isSend` = 1
+</select>
+
+<select id = "getCount" resultType = "int">
+SELECT COUNT(*) FROM (SELECT tco.id, tco.`name`, tco.car_type, tco.`carId`, tco.`count_passenger`, tc.`fullName` companyName, tco.`isType`, tco.oilType  FROM t_car tco, t_company tc
+WHERE tco.`company_id` = tc.`id` AND tco.`isSend` = 1)AS temp;
+</select>
+
+<update id="sendCar" parameterType="map">
+update t_car set isType = 1, check_People = #{checkPeople}, check_People_name = #{checkPeople_name}, sendSuccessTime = #{sendSuccessTime},
+check_suggestion = #{check_suggestion} where id = #{id}
+</update>
+
+</mapper>

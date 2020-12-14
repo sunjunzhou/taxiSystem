@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "http://mybatis.org/dtd/mybatis-3-mapper.dtd" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.snowsoft.dao.CompanyDao">
+<select id = "getCompanyList" parameterType = "map" resultType = "map">
+	SELECT  
+	tc.id,
+	tc.shortName,
+	tc.fullName,
+	tc.businessNum,
+	tc.leaderName,
+	tc.tel,
+	tc.address,
+	tc.user_id,
+	tc.user_name
+FROM t_company tc
+WHERE tc.id != 1
+</select>
+<select id = "getCount" resultType = "int">
+	SELECT count(*) FROM (	SELECT  
+	tc.id,
+	tc.shortName,
+	tc.fullName,
+	tc.businessNum,
+	tc.leaderName,
+	tc.tel,
+	tc.address,
+	tc.user_id,
+	tc.user_name
+FROM t_company tc
+WHERE tc.id != 1) as temp;
+</select>
+
+
+<select id="getCompanyById" resultType = "map">
+	SELECT  
+	tc.shortName,
+	tc.fullName,
+	tc.businessNum,
+	tc.leaderName,
+	tc.tel,
+	tc.address,
+	tc.user_id,
+	tc.user_name
+FROM t_company tc
+WHERE id =#{id}
+</select>
+
+<!-- 添加 -->
+
+<insert id="insertCompanyInfo" parameterType="Company">
+
+insert into t_company(
+  `shortName`,
+  `fullName`,
+  `businessNum`,
+  `leaderName`,
+  `tel`,
+  `address`,
+  `user_id`,
+  `user_name`) values (
+#{shortName},#{fullName},#{businessNum},#{leaderName},#{tel},#{address},#{user_id},#{user_name})
+</insert>
+
+
+<!-- 修改角色信息 -->
+<update id="updateCompanyInfo" parameterType="Company">
+	update t_company set shortName=#{shortName},fullName=#{fullName},businessNum=#{businessNum},
+	leaderName=#{leaderName},tel=#{tel},address=#{address},user_id=#{user_id},user_name=#{user_name}where id=#{id}
+</update>
+
+<delete id="deleteCompanyById">
+	delete  from t_company where id=#{id};
+</delete>
+
+</mapper>
+
